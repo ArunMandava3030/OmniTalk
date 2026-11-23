@@ -10,6 +10,8 @@ import { flowRouter } from './flow';
 import { messageRouter } from './message';
 import { webhookRouter } from './webhook';
 import { analyticsRouter } from './analytics';
+import { ecommerceRouter } from './ecommerce';
+import { crmRouter } from './crm';
 
 export function setupRoutes(app: Application): void {
   // Public routes
@@ -23,4 +25,6 @@ export function setupRoutes(app: Application): void {
   app.use('/api/flows', flowRouter);
   app.use('/api/messages', messageRouter);
   app.use('/api/analytics', analyticsRouter);
+  app.use('/api/ecommerce', ecommerceRouter);
+  app.use('/api/crm', crmRouter);
 }

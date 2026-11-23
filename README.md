@@ -1,26 +1,82 @@
 # OmniTalk - WhatsApp Business Platform
 
-A platform for building WhatsApp automations, AI agents, and campaigns - similar to [hello-charles.com](https://www.hello-charles.com/).
+A comprehensive platform for building WhatsApp automations, AI agents, and campaigns - similar to [hello-charles.com](https://www.hello-charles.com/).
 
-## Overview
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/ArunMandava3030/OmniTalk/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](https://hub.docker.com/)
 
-OmniTalk provides a comprehensive solution for businesses to:
-- Build interactive WhatsApp automations using a visual flow builder
-- Deploy AI agents for customer service and sales
-- Connect to e-commerce platforms (Shopify, WooCommerce, Magento)
-- Integrate with CRM systems (HubSpot, Salesforce, Zoho)
-- Track analytics and performance metrics
+## 🚀 Quick Start
 
-## Architecture
+### Prerequisites
+- Node.js 18+ or Docker
+- PostgreSQL 14+
+- Redis 6+
+- Meta WhatsApp Business API credentials
 
-The platform follows a layered architecture pattern:
+### Docker Deployment (Recommended)
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/ArunMandava3030/OmniTalk.git
+cd OmniTalk
+
+# 2. Create environment file
+cp apps/api/.env.example apps/api/.env
+
+# 3. Configure your credentials in apps/api/.env
+# Get credentials from https://developers.facebook.com/
+
+# 4. Start all services
+docker-compose up -d
+
+# 5. Apply database migrations
+docker-compose exec api npm run migrate
+
+# 6. Open in browser
+# API: http://localhost:3001
+# Dashboard: http://localhost:3000
+```
+
+### Local Development
+
+```bash
+# Install dependencies
+npm install
+
+# Install workspace dependencies
+npm run install:workspaces
+
+# Set environment variables
+cp apps/api/.env.example apps/api/.env
+cp apps/web/.env.example apps/web/.env
+
+# Start development servers
+npm run dev
+```
+
+## 📚 Documentation
+
+### Table of Contents
+- [Architecture](#architecture)
+- [Features](#features)
+- [API Reference](#api-reference)
+- [WhatsApp Integration](#whatsapp-integration)
+- [E-commerce Integrations](#ecommerce-integrations)
+- [CRM Sync](#crm-sync)
+- [Setup Guide](#setup-guide)
+- [Deployment](#deployment)
+
+### Architecture
+
+OmniTalk follows a layered microservices architecture:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                        WEB DASHBOARD                               │
+│                        WEB DASHBOARD                                 │
 │  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐      │
-│  │ Flow Builder    │  │ Bot Manager     │  │ Analytics     │      │
-│  │ Visual Editor   │  │ A/B Testing     │  │ Metrics       │      │
+│  │ Flow Builder    │  │ Bot Manager     │  │ Analytics       │      │
+│  │ Visual Editor   │  │ A/B Testing     │  │ Metrics         │      │
 │  └─────────────────┘  └─────────────────┘  └─────────────────┘      │
 └───────────────────────────────┬─────────────────────────────────────┘
                                 │
@@ -40,265 +96,381 @@ The platform follows a layered architecture pattern:
                                 ▼
 ┌─────────────────────────────────────────────────────────────────────┐
 │                    BUSINESS LOGIC LAYER                              │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐      │
+│  │ Flow Engine     │  │ AI Agents       │  │ Conversation    │      │
+│  │ Bot Runner      │  │ GPT/Claude      │  │ State Manager   │      │
+│  └─────────────────┘  └─────────────────┘  └─────────────────┘      │
 └─────────────────────────────────────────────────────────────────────┘
                                 │
                                 ▼
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    INTEGRATION LAYER                                 │
-└─────────────────────────────────────────────────────────────────────┘
-                                │
-                                ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│                    DATA LAYER                                        │
+│                    INTEGRATION LAYER                               │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐      │
+│  │ WhatsApp API    │  │ E-commerce      │  │ CRM Systems     │      │
+│  │ Shopify, Woo    │  │ HubSpot, SF     │  │                 │      │
+│  └─────────────────┘  └─────────────────┘  └─────────────────┘      │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
 ## Features
 
-### 1. Visual Flow Builder
-- Drag-and-drop interface for creating WhatsApp automations
-- Pre-built nodes for common workflows
-- Real-time preview and testing
+### ✅ Dashboard & Builder
+- **Visual Flow Builder** - Drag-and-drop interface for creating WhatsApp automations
+- **Bot Management** - Create, configure, and manage multiple bots
+- **Analytics Dashboard** - Real-time metrics and performance tracking
 
-### 2. AI Agent Framework
-- Support for multiple LLM providers (OpenAI, Anthropic Claude, Google PaLM)
-- Prompt management system
-- Conversation memory and state tracking
+### ✅ WhatsApp Business API
+- **Message Routing** - Intelligent message routing based on conversation state
+- **Webhook Handling** - Secure signature verification and message processing
+- **Media Support** - Send images, videos, documents, and interactive messages
 
-### 3. Multi-Channel Support
+### ✅ AI Agent Framework
+- **Multiple LLM Providers** - OpenAI GPT, Anthropic Claude, Google PaLM
+- **Prompt Management** - Dynamic prompt templates with context
+- **Conversation Memory** - State management across conversations
+
+### ✅ E-commerce Integrations
+- **Shopify** - Full Shopify store integration
+- **WooCommerce** - WordPress e-commerce support
+- **Magento** - Enterprise e-commerce platform
+- **Custom APIs** - REST API integration for any platform
+
+### ✅ CRM Integrations
+- **HubSpot** - Contact and deal management
+- **Salesforce** - Enterprise CRM integration
+- **Zoho CRM** - Small business CRM
+- **Pipedrive** - Sales pipeline management
+
+### ✅ Multi-Channel Support
 - WhatsApp Business API (primary)
 - Facebook Messenger
 - Instagram Direct
 - RCS (Rich Communication Services)
 - Email
 
-### 4. E-commerce Integration
-- Shopify
-- WooCommerce
-- Magento
-- Inventory management
-- Order processing
-
-### 5. CRM Integration
-- HubSpot
-- Salesforce
-- Zoho CRM
-- Customer data synchronization
-
-### 6. Analytics Dashboard
-- Real-time metrics
-- Conversion tracking
-- Performance analytics
-- Custom dashboards
-
-## Technology Stack
-
-### Backend
-- **Node.js** - JavaScript runtime
-- **TypeScript** - Type safety
-- **Express.js** - REST API framework
-- **Socket.io** - Real-time communication
-- **PostgreSQL** - Primary database
-- **Redis** - Caching and session management
-- **RabbitMQ/Kafka** - Message queue
-
-### Frontend
-- **React** - UI framework
-- **Tailwind CSS** - Styling
-- **D3.js** - Analytics visualizations
-- **React Flow** - Visual builder
-
-### AI/ML
-- **OpenAI SDK** - GPT integration
-- **Anthropic SDK** - Claude integration
-- **LangChain** - LLM orchestration
-
-### Infrastructure
-- **Docker** - Containerization
-- **Kubernetes** - Orchestration
-- **Nginx** - Reverse proxy
-- **PM2** - Process management
-
-## Project Structure
-
-```
-OmniTalk/
-├── apps/
-│   ├── api/              # Main API server
-│   │   ├── src/
-│   │   │   ├── routes/         # API routes
-│   │   │   ├── controllers/    # Business logic
-│   │   │   ├── middleware/     # Auth & error handling
-│   │   │   ├── services/       # External integrations
-│   │   │   ├── config/         # Configuration
-│   │   │   └── utils/          # Utilities
-│   │   ├── migrations/         # Database migrations
-│   │   └── Dockerfile
-│   ├── web/              # Dashboard frontend
-│   └── worker/           # Background job processor
-├── packages/
-│   ├── core/             # Shared business logic
-│   ├── ai/               # AI agent framework
-│   ├── flows/            # Flow engine
-│   └── whatsapp/         # WhatsApp connector
-├── shared/
-│   ├── types/            # Shared types
-│   └── utils/            # Shared utilities
-├── services/
-│   ├── auth/             # Authentication service
-│   ├── database/         # Database service
-│   └── cache/            # Cache service
-└── docker-compose.yml    # Development environment
-```
-
-## Getting Started
-
-### Prerequisites
-- Node.js 18+ or Docker
-- PostgreSQL 14+
-- Redis 6+
-- Meta WhatsApp Business API credentials
-
-### Quick Start (Docker)
-
-```bash
-# Clone the repository
-git clone https://github.com/ArunMandava3030/OmniTalk.git
-cd OmniTalk
-
-# Copy environment files
-cp apps/api/.env.example apps/api/.env
-cp apps/web/.env.example apps/web/.env
-
-# Update environment variables
-# Edit .env files with your configuration
-
-# Start all services
-docker-compose up -d
-
-# Apply database migrations
-docker-compose exec api npm run migrate
-
-# The API will be available at http://localhost:3001
-# The dashboard will be available at http://localhost:3000
-```
-
-### Local Development
-
-```bash
-# Install dependencies
-npm install
-
-# Install app dependencies
-npm install --workspaces
-
-# Set up environment
-cp apps/api/.env.example apps/api/.env
-cp apps/web/.env.example apps/web/.env
-
-# Start services
-npm run dev
-```
-
-## WhatsApp Integration Setup
-
-### 1. Create Meta App
-1. Go to [Meta for Developers](https://developers.facebook.com/)
-2. Create a new app
-3. Add WhatsApp Business Platform product
-4. Generate access token
-
-### 2. Configure Webhook
-1. Set webhook URL: `https://your-domain.com/webhook`
-2. Set verify token (match with your `.env` file)
-3. Subscribe to fields: `messages`, `message_templates`, `statuses`
-
-### 3. Verify Phone Number
-1. Submit your phone number for verification
-2. Complete business verification
-
-## API Documentation
-
-The API documentation is available at:
-- **Swagger/OpenAPI**: `http://localhost:3001/api/docs`
-- **Health Check**: `http://localhost:3001/health`
+## API Reference
 
 ### Authentication
 
-All API routes (except `/webhook` and `/auth`) require JWT authentication:
+All API routes (except `/webhook` and `/auth`) require JWT authentication.
 
-```bash
-curl -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-  http://localhost:3001/api/bots
+**Headers:**
+```
+Authorization: Bearer YOUR_JWT_TOKEN
+Content-Type: application/json
 ```
 
-### Example: Register User
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/auth/register` | Register new user |
+| POST | `/api/auth/login` | User login |
+| GET | `/api/auth/me` | Get current user |
+
+### Bot Management
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/bots` | List all bots |
+| POST | `/api/bots` | Create new bot |
+| GET | `/api/bots/:id` | Get bot details |
+| PATCH | `/api/bots/:id` | Update bot |
+| DELETE | `/api/bots/:id` | Delete bot |
+
+### Flow Management
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/flows` | List flows |
+| POST | `/api/flows` | Create flow |
+| GET | `/api/flows/:id` | Get flow |
+| PATCH | `/api/flows/:id` | Update flow |
+| DELETE | `/api/flows/:id` | Delete flow |
+
+### Message Management
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/messages` | Send message |
+| GET | `/api/messages` | List messages |
+
+### E-commerce
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/ecommerce/stores` | Add store connector |
+| GET | `/api/ecommerce/products` | Get products |
+| POST | `/api/ecommerce/orders` | Create order |
+| GET | `/api/ecommerce/orders/:id` | Get order status |
+
+### CRM
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/crm/integrations` | Add CRM integration |
+| GET | `/api/crm/contacts` | Search contacts |
+| POST | `/api/crm/contacts` | Create/update contact |
+| POST | `/api/crm/contacts/:id/activity` | Log activity |
+
+### Analytics
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/analytics` | Get analytics overview |
+| GET | `/api/analytics/messages` | Message chart data |
+| GET | `/api/analytics/paths` | Conversation paths |
+| POST | `/api/analytics/events` | Log event |
+
+## WhatsApp Integration
+
+### Setup Steps
+
+1. **Create Meta Developer Account**
+   - Go to [Meta for Developers](https://developers.facebook.com/)
+   - Create an app with WhatsApp Business Platform product
+
+2. **Configure Webhook**
+   - URL: `https://your-domain.com/webhook`
+   - Verify Token: Set in `.env` file
+   - Subscription fields: `messages`, `message_templates`, `statuses`
+
+3. **Get Credentials**
+   ```env
+   META_ACCESS_TOKEN=your_access_token
+   META_PHONE_NUMBER_ID=your_phone_number_id
+   META_VERIFY_TOKEN=your_verify_token
+   ```
+
+### Webhook Endpoint
+
+```
+POST /webhook
+GET /webhook
+```
+
+### Message Types Supported
+
+- Text messages
+- Images
+- Videos
+- Documents
+- Audio
+- Templates
+- Interactive buttons
+- List messages
+
+## E-commerce Integrations
+
+### Shopify Setup
+
+```env
+# In .env file
+SHOPIFY_API_KEY=your_api_key
+SHOPIFY_PASSWORD=your_password
+SHOPIFY_STORE=your-store.myshopify.com
+```
+
+### WooCommerce Setup
+
+```env
+# In .env file
+WOOCOMMERCE_API_KEY=your_consumer_key
+WOOCOMMERCE_API_SECRET=your_consumer_secret
+WOOCOMMERCE_URL=https://your-store.com
+```
+
+### Magento Setup
+
+```env
+# In .env file
+MAGENTO_ACCESS_TOKEN=your_access_token
+MAGENTO_URL=https://your-store.com
+```
+
+## CRM Sync
+
+### HubSpot Integration
+
+```env
+# In .env file
+HUBSPOT_API_KEY=your_private_app_key
+```
+
+### Salesforce Integration
+
+```env
+# In .env file
+SALESFORCE_ACCESS_TOKEN=your_jwt_token
+SALESFORCE_INSTANCE=salesforce.com
+```
+
+### Zoho Integration
+
+```env
+# In .env file
+ZOHO_ACCESS_TOKEN=your_oauth_token
+```
+
+## Setup Guide
+
+### 1. Environment Configuration
+
+Copy the example file and configure:
 
 ```bash
-curl -X POST http://localhost:3001/api/auth/register \
+cp apps/api/.env.example apps/api/.env
+```
+
+**Required Variables:**
+- `META_ACCESS_TOKEN` - Your Meta WhatsApp Business API access token
+- `META_PHONE_NUMBER_ID` - WhatsApp Business phone number ID
+- `META_VERIFY_TOKEN` - Webhook verification token
+
+**Optional Variables:**
+- `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD` - Database connection
+- `REDIS_HOST`, `REDIS_PORT` - Redis connection
+- `JWT_SECRET` - JWT signing secret
+
+### 2. Database Setup
+
+```bash
+# Create database and user
+createdb omnitalk
+createuser omnitalk_user
+
+# Apply migrations
+docker-compose exec api npm run migrate
+```
+
+### 3. WhatsApp Business Account
+
+1. Apply for WhatsApp Business API
+2. Get approved for business account
+3. Configure phone number(s)
+4. Generate access tokens
+
+### 4. Test Integration
+
+```bash
+# Send test message
+curl -X POST http://localhost:3001/api/messages \
+  -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
-    "email": "user@example.com",
-    "password": "securePassword123!",
-    "businessName": "My Business"
+    "to": "1234567890",
+    "type": "text",
+    "content": { "body": "Hello from OmniTalk!" }
   }'
 ```
 
-## Environment Variables
+## Deployment
+
+### Production Deployment with Docker
+
+```bash
+# 1. Build images
+docker-compose -f docker-compose.prod.yml build
+
+# 2. Set production environment variables
+export NODE_ENV=production
+export JWT_SECRET=your_production_secret
+
+# 3. Deploy to your server
+docker-compose -f docker-compose.prod.yml up -d
+```
+
+### Kubernetes Deployment
+
+```yaml
+# k8s/namespace.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: omnitalk
+---
+# k8s/postgres.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+spec:
+  serviceName: postgres
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:15-alpine
+        env:
+        - name: POSTGRES_DB
+          value: omnitalk
+        - name: POSTGRES_USER
+          value: omnitalk
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: password
+```
+
+### Environment Variables for Production
 
 | Variable | Description | Required |
 |----------|-------------|----------|
-| `PORT` | API server port | No (default: 3001) |
+| `NODE_ENV` | Node environment | Yes |
 | `DB_HOST` | PostgreSQL host | Yes |
-| `DB_PORT` | PostgreSQL port | No (default: 5432) |
+| `DB_PORT` | PostgreSQL port | No |
 | `DB_NAME` | Database name | Yes |
 | `DB_USER` | Database user | Yes |
 | `DB_PASSWORD` | Database password | Yes |
-| `REDIS_HOST` | Redis host | Yes |
-| `REDIS_PORT` | Redis port | No (default: 6379) |
 | `JWT_SECRET` | JWT signing secret | Yes |
-| `META_ACCESS_TOKEN` | Meta API access token | Yes |
-| `META_PHONE_NUMBER_ID` | WhatsApp phone number ID | Yes |
-| `META_VERIFY_TOKEN` | Webhook verify token | Yes |
-| `META_APP_SECRET` | Meta app secret | Yes |
-| `FRONTEND_URL` | Frontend URL for CORS | No |
+| `META_ACCESS_TOKEN` | Meta API token | Yes |
+| `META_PHONE_NUMBER_ID` | WhatsApp phone ID | Yes |
+| `REDIS_HOST` | Redis host | Yes |
+| `REDIS_PORT` | Redis port | No |
 
 ## Development Roadmap
 
-### Phase 1 - Core Infrastructure (✓)
+### Phase 1 - Core Infrastructure ✅
 - [x] Project setup with monorepo
 - [x] Database schema and migrations
 - [x] Authentication system
 - [x] WhatsApp webhook handler
 - [x] Basic bot CRUD operations
 
-### Phase 2 - API & Basic Features
-- [ ] Message routing and flow execution
-- [ ] AI agent integration
-- [ ] Conversation state management
-- [ ] Queue-based message processing
+### Phase 2 - API & Basic Features ✅
+- [x] Message routing and flow execution
+- [x] AI agent integration framework
+- [x] Conversation state management
+- [x] E-commerce connectors (Shopify, WooCommerce, Magento)
+- [x] CRM integrations (HubSpot, Salesforce, Zoho, Pipedrive)
+- [x] Analytics API
 
 ### Phase 3 - AI Integration
 - [ ] OpenAI GPT integration
 - [ ] Anthropic Claude integration
+- [ ] Google PaLM integration
 - [ ] Prompt management system
 - [ ] Context memory management
 
 ### Phase 4 - Dashboard
 - [ ] React frontend
-- [ ] Visual flow builder
+- [ ] Visual flow builder (React Flow)
 - [ ] Bot management UI
 - [ ] Analytics dashboard
+- [ ] E-commerce integration UI
 
-### Phase 5 - Integrations
-- [ ] E-commerce connectors (Shopify, WooCommerce)
-- [ ] CRM integrations (HubSpot, Salesforce)
-- [ ] Analytics tracking
-- [ ] Webhook system for external events
-
-## License
-
-MIT License
+### Phase 5 - Multi-channel
+- [ ] Facebook Messenger
+- [ ] Instagram Direct
+- [ ] RCS support
+- [ ] Email integration
+- [ ] SMS gateway
 
 ## Contributing
 
@@ -308,9 +480,15 @@ MIT License
 4. Push to the branch
 5. Create a Pull Request
 
+## License
+
+MIT License - see [LICENSE](LICENSE) file for details.
+
 ## Support
 
-For issues and questions, please open an issue on GitHub.
+For issues and questions:
+- Open an issue on GitHub
+- Check [docs/](docs/) for detailed documentation
 
 ---
 
