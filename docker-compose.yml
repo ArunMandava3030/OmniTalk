@@ -1,0 +1,121 @@
+version: '3.8'
+
+services:
+  # API Server
+  api:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    container_name: omnitalk-api
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=omnitalk
+      - DB_USER=omnitalk
+      - DB_PASSWORD=omnitalk_password
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - JWT_SECRET=${JWT_SECRET:-omnitalk_jwt_secret}
+      - META_ACCESS_TOKEN=${META_ACCESS_TOKEN}
+      - META_PHONE_NUMBER_ID=${META_PHONE_NUMBER_ID}
+      - META_VERIFY_TOKEN=${META_VERIFY_TOKEN:-omnitalk_webhook_token}
+      - META_APP_SECRET=${META_APP_SECRET:-omnitalk_app_secret}
+      - FRONTEND_URL=http://localhost:3000
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./apps/api/src:/app/src
+      - /app/node_modules
+    restart: unless-stopped
+
+  # Frontend Dashboard
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    container_name: omnitalk-web
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - REACT_APP_API_URL=http://localhost:3001/api
+    depends_on:
+      - api
+    volumes:
+      - ./apps/web/src:/app/src
+      - /app/node_modules
+    restart: unless-stopped
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: omnitalk-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=omnitalk
+      - POSTGRES_USER=omnitalk
+      - POSTGRES_PASSWORD=omnitalk_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./apps/api/migrations:/docker-entrypoint-initdb.d
+    restart: unless-stopped
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: omnitalk-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+  # RabbitMQ Message Queue
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: omnitalk-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=omnitalk
+      - RABBITMQ_DEFAULT_PASS=omnitalk_pass
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    restart: unless-stopped
+
+  # Message Processor Worker
+  worker:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    container_name: omnitalk-worker
+    command: npm run worker
+    environment:
+      - NODE_ENV=development
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=omnitalk
+      - DB_USER=omnitalk
+      - DB_PASSWORD=omnitalk_password
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - META_ACCESS_TOKEN=${META_ACCESS_TOKEN}
+      - META_PHONE_NUMBER_ID=${META_PHONE_NUMBER_ID}
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./apps/api/src:/app/src
+      - /app/node_modules
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
+  rabbitmq_data:
