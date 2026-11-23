@@ -491,5 +491,3 @@ For issues and questions:
 - Check [docs/](docs/) for detailed documentation
 
 ---
-
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
